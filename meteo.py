@@ -1,6 +1,8 @@
 from flask import Flask
 from flask_restplus import Api, Resource, fields
 from werkzeug.contrib.fixers import ProxyFix
+import urllib.parse
+from pymongo import MongoClient
 
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app)
@@ -21,12 +23,22 @@ station = api.model('Stations', {
     'humidite':fields.Float(required=True)  
 })
 
+def mongoConnexion(MonInsert):
+    username = urllib.parse.quote_plus('adminmongo')
+    password = urllib.parse.quote_plus('mongoadmin')
+    client =MongoClient('mongodb://%s:%s@localhost' % (username, password))
+    db=client.weatherFlask
+    result=db.reviews.insert_one(MonInsert)
+    return result
+
+
 class stationDAO(object):
     def __init__(self):
         super().__init__()
+
     def create(self,data):
         station=data
-        return station
+        return mongoConnexion(station)
 
 DAO=stationDAO()
 
