@@ -42,15 +42,15 @@ class stationDAO(object):
 
 DAO=stationDAO()
 
-@ns.route('/')
+@ns.route('/api/v1/sonde')
 class TodoList(Resource):
     @ns.doc('create_station')
     @ns.expect(station)
     @ns.marshal_with(station, code=201)
     def post(self):
-        '''Create a new task'''
+        '''importe une nouvelle station'''
         return DAO.create(api.payload), 201
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0",port="5010", debug=True)
